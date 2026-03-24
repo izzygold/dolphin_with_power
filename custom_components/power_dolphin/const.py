@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-DOMAIN = "dolphin"
+DOMAIN = "power_dolphin"
 CONF_USERNAME = "Username"
 CONF_PASSWORD = "Password"
 UPDATE_INTERVAL = timedelta(seconds=30)

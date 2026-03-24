@@ -1,10 +1,10 @@
 {
-  "domain": "dolphin",
-  "name": "dolphin",
+  "domain": "power_dolphin",
+  "name": "Power Dolphin",
   "config_flow": true,
   "documentation": "https://github.com/izzygold/dolphin_with_power",
   "issue_tracker": "https://github.com/izzygold/dolphin_with_power/issues",
   "codeowners": ["@izzygold", "@0xAlon"],
-  "version": "1.0.2",
+  "version": "2.0.0",
   "iot_class": "cloud_polling"
 }

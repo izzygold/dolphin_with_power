@@ -33,12 +33,12 @@ async def async_setup_entry(
     switches = []
 
     for device in coordinator.data.keys():
-        switches.append(DolphinWaterHeater(hass=hass, coordinator=coordinator, device=device))
+        switches.append(PowerDolphinWaterHeater(hass=hass, coordinator=coordinator, device=device))
 
     async_add_entities(switches)
 
 
-class DolphinWaterHeater(CoordinatorEntity, ClimateEntity):
+class PowerDolphinWaterHeater(CoordinatorEntity, ClimateEntity):
     _attr_hvac_modes = OPERATION_LIST
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
     _enable_turn_on_off_backwards_compatibility = False
@@ -68,7 +68,7 @@ class DolphinWaterHeater(CoordinatorEntity, ClimateEntity):
 
         self._name = [i for i in self._coordinator.user.device if i['deviceName'] == device][0]['nickname']
         if self._name == None:
-            self._name = "Dolphin"
+            self._name = "Power Dolphin"
 
         self._available = True
 
@@ -142,10 +142,10 @@ class DolphinWaterHeater(CoordinatorEntity, ClimateEntity):
         """Set temperature."""
 
         if kwargs.get('temperature') >= self._coordinator.data[self._device].temperature:
-            await self._coordinator.dolphin.turnOnManually(self._coordinator.dolphin._user,
+            await self._coordinator.power_dolphin.turnOnManually(self._coordinator.power_dolphin._user,
                                                            kwargs.get('temperature'), self._device)
             if self._coordinator.data[self._device].fixedTemperature:
-                await self._coordinator.dolphin.turnOnFixedTemperature(self._coordinator.dolphin._user, self._device,
+                await self._coordinator.power_dolphin.turnOnFixedTemperature(self._coordinator.power_dolphin._user, self._device,
                                                                        kwargs.get('temperature'))
         else:
             self._coordinator.data[self._device].targetTemperature = self._coordinator.data[self._device].temperature
@@ -158,23 +158,23 @@ class DolphinWaterHeater(CoordinatorEntity, ClimateEntity):
 
         if hvac_mode == HVACMode.OFF and not self._coordinator.data[self._device].power:
 
-            await self._coordinator.dolphin.turnOnManually(self._coordinator.dolphin._user, self._attr_max_temp,
+            await self._coordinator.power_dolphin.turnOnManually(self._coordinator.power_dolphin._user, self._attr_max_temp,
                                                            self._device)
             await self.coordinator.async_request_refresh()
             self.async_write_ha_state()
 
         elif hvac_mode == HVACMode.OFF and self._coordinator.data[self._device].power:
 
-            await self._coordinator.dolphin.turnOffManually(self._coordinator.dolphin._user, self._device)
+            await self._coordinator.power_dolphin.turnOffManually(self._coordinator.power_dolphin._user, self._device)
             if self._coordinator.data[self._device].fixedTemperature:
-                await self._coordinator.dolphin.turnOffFixedTemperature(self._coordinator.dolphin._user, self._device)
+                await self._coordinator.power_dolphin.turnOffFixedTemperature(self._coordinator.power_dolphin._user, self._device)
                 self._coordinator.data[self._device].fixedTemperature = False
             await self.coordinator.async_request_refresh()
             self.async_write_ha_state()
 
         elif not self._coordinator.data[self._device].power:
 
-            await self._coordinator.dolphin.turnOnManually(self._coordinator.dolphin._user, self._attr_max_temp,
+            await self._coordinator.power_dolphin.turnOnManually(self._coordinator.power_dolphin._user, self._attr_max_temp,
                                                            self._device)
             await self.coordinator.async_request_refresh()
             self.async_write_ha_state()

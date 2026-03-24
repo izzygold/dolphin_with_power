@@ -12,8 +12,8 @@ from .models import User, Device
 _LOGGER = logging.getLogger(__name__)
 
 
-class Dolphin:
-    """Main class for handling connections with Dolphin."""
+class PowerDolphin:
+    """HTTP client for the Dolphin boiler cloud API."""
 
     host: str = "api.dolphinboiler.com"
     request_timeout: float = 10.0
@@ -54,7 +54,7 @@ class Dolphin:
         return None
 
     async def async_setup(self):
-        """Set up the Dolphin integration."""
+        """Set up the API client."""
         await self.create_ssl_context()
 
     async def update(self, user: User) -> Device:
@@ -176,7 +176,7 @@ class Dolphin:
             pass
 
     async def disconnect(self) -> None:
-        """Disconnect from the WebSocket of a Dolphin device."""
+        """Disconnect from the device WebSocket."""
         if not self._client or not self.connected:
             return
 
