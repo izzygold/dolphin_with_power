@@ -1,0 +1,18 @@
+{
+  "title": "Power Dolphin",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Power Dolphin",
+        "description": "Use the same email and password as in the Dolphin app.",
+        "data": {
+          "Username": "Email address",
+          "Password": "Password"
+        }
+      }
+    },
+    "error": {
+      "auth": "Invalid email or password."
+    }
+  }
+}

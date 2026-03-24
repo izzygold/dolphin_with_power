@@ -1,17 +1,24 @@
 """Power Dolphin integration."""
 
+from __future__ import annotations
+
 import asyncio
 import logging
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.typing import ConfigType
 
 from .API.power_dolphin import PowerDolphin, User
 from .const import CONF_PASSWORD, CONF_USERNAME, DOMAIN, PLATFORMS
 from .coordinator import UpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Bootstrap integration (YAML not used; config entries only)."""
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
