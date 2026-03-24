@@ -1,52 +1,84 @@
 # Dolphin for Home Assistant
 
-[Home Assistant](https://www.home-assistant.io/) Integration for [Dolphin](https://www.dolphinboiler.com) Boiler - Smart Water Heating Control
+[Home Assistant](https://www.home-assistant.io/) integration for [Dolphin](https://www.dolphinboiler.com) smart water heaters.
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
 <p align="center"><img src="https://raw.githubusercontent.com/home-assistant/brands/43fe40e19cc76a6d9b18a38bb178f6dcc6ba05d5/custom_integrations/dolphin/logo.png" width="647" height="128" alt=""/></p>
 
-The component is developed by [Alon Teplitsky](https://www.linkedin.com/in/alon-teplitsky/).
+---
+
+## This repository is a fork
+
+**We did not create the original integration.** This repo is a **fork** that adds **power** and **energy** sensors on top of an existing, working project.
+
+The integration was originally developed by **[Alon Teplitsky](https://www.linkedin.com/in/alon-teplitsky/)** ([@0xAlon](https://github.com/0xAlon) on GitHub). Alon’s work is what makes Dolphin boilers talk to Home Assistant in the first place, and it does that job well. We have no interest in replacing that project or suggesting there is anything “wrong” with it—this fork exists only because we wanted extra entities for our own homes.
+
+**Upstream (baseline) repository:** [github.com/0xAlon/dolphin](https://github.com/0xAlon/dolphin)
+
+If you do not need calculated power or energy, you may prefer to stay on Alon’s repository; it is the natural home for the core integration and broader community discussion.
+
+### Why we forked
+
+On supported devices, the upstream integration exposes **electric current in amperes (A)**. We also wanted:
+
+- **Electric power (W)** — for live load and automations.
+- **Electric energy (kWh)** — for long-term use and the Home Assistant **Energy** dashboard.
+
+The data path used by the integration does not provide separate voltage or energy readings from the device, so this fork **computes** them:
+
+- **Power:** \(P \approx 230\,\mathrm{V} \times I\) (fixed nominal voltage; change `NOMINAL_VOLTAGE_V` in `custom_components/dolphin/const.py` if your supply differs).
+- **Energy:** kWh accumulated between coordinator updates from that power (trapezoidal rule over time), with the total **restored after a Home Assistant restart**.
+
+Those assumptions are approximations (real mains voltage and power factor vary). They are good enough for many monitoring and Energy-dashboard use cases; treat the numbers accordingly.
+
+---
 
 ## Installation
 
-### HACS
+Use **this** repository (`izzygold/dolphin_with_power`), not the HACS default search result for “dolphin”, unless you intentionally want the upstream integration without these sensors.
 
-1. Install [HACS](https://hacs.xyz/)
+### HACS (recommended)
 
-<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=0xAlon&repository=dolphin&category=integration" target="_blank"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store." /></a>
+1. Install [HACS](https://hacs.xyz/) if you have not already.
+2. In Home Assistant, open **HACS** → **Integrations**.
+3. Open the menu (⋮) → **Custom repositories**.
+4. Add repository **`https://github.com/izzygold/dolphin_with_power`**, category **Integration**, then **Add**.
+5. In **HACS** → **Integrations**, open **+ Explore & download repositories**, find **dolphin** from this custom repo, and **Download**.
+6. Restart Home Assistant.
 
-2. Go to HACS "Integrations >" section
-3. In the lower right click "+ Explore & Download repositories"
-4. Search for "dolphin" and add it
-5. Restart Home Assistant
+<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=izzygold&repository=dolphin_with_power&category=integration" target="_blank"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open this fork’s repository in HACS." /></a>
 
-<a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=dolphin" target="_blank"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up a new integration." /></a>
+7. In Home Assistant go to **Settings** → **Devices & services** → **+ Add integration** → search for **dolphin** and complete the config flow.
 
-5. In the Home Assistant UI go to "Settings"
-6. Click "Devices & Services"
-7. Click "+ Add Integration"
-8. Search for "dolphin"
+<a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=dolphin" target="_blank"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up the Dolphin integration." /></a>
 
 ### Manual
 
-1. Using the tool of choice open the directory (folder) for your [HA configuration](https://www.home-assistant.io/docs/configuration/) (where you find `configuration.yaml`).
-2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `dolphin`.
-4. Download _all_ the files from the `custom_components/dolphin/` directory (folder) in this repository.
-5. Place the files you downloaded in the new directory (folder) you created.
-6. Restart Home Assistant
-7. In the Home Assistant UI go to "Configuration"
-8. Click "Integrations"
-9. Click "+ Add Integration"
-10. Search for "dolphin"
+1. Open your [Home Assistant configuration folder](https://www.home-assistant.io/docs/configuration/) (where `configuration.yaml` lives).
+2. If there is no `custom_components` folder, create it.
+3. Inside `custom_components`, create a folder named `dolphin`.
+4. Copy **all** files from the `custom_components/dolphin/` directory **of this repository** into that `dolphin` folder (not from the upstream repo, if you want power/energy).
+5. Restart Home Assistant.
+6. Go to **Settings** → **Devices & services** → **+ Add integration** → search for **dolphin**.
+
+---
 
 ## Devices
 
-A device is created for each dolphin unit. Each device contains:
+For each Dolphin unit, Home Assistant gets a device with (among other entities):
 
-- `Climate sensor`
-- `Electric current sensor (on supported devices)`
-- `Fixed temperature switch`
-- `Sabbath mode switch`
-- `Shower switches`
+- Climate / water heater controls (as in upstream)
+- **Electric current (A)** — from the boiler, on supported hardware
+- **Electric power (W)** — calculated from current and nominal 230 V (this fork)
+- **Electric energy (kWh)** — integrated over time for Energy dashboard–friendly totals (this fork)
+- Fixed temperature, Sabbath mode, and shower switches (as in upstream)
+
+---
+
+## Credits
+
+- **Original integration:** [Alon Teplitsky](https://www.linkedin.com/in/alon-teplitsky/) / [@0xAlon](https://github.com/0xAlon) — [0xAlon/dolphin](https://github.com/0xAlon/dolphin).
+- **This fork:** power/energy sensors and documentation updates for [izzygold/dolphin_with_power](https://github.com/izzygold/dolphin_with_power).
+
+If you hit bugs that are specific to **power, energy, or the 230 V assumption**, open an issue on **this** repository. For core Dolphin/API behaviour shared with upstream, consider checking upstream issues too—fixes there help everyone.

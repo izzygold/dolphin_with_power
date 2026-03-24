@@ -2,9 +2,9 @@
   "domain": "dolphin",
   "name": "dolphin",
   "config_flow": true,
-  "documentation": "https://github.com/0xAlon/dolphin",
-  "issue_tracker": "https://github.com/0xAlon/dolphin",
-  "codeowners": ["@0xAlon"],
+  "documentation": "https://github.com/izzygold/dolphin_with_power",
+  "issue_tracker": "https://github.com/izzygold/dolphin_with_power/issues",
+  "codeowners": ["@izzygold", "@0xAlon"],
   "version": "1.0.2",
   "iot_class": "cloud_polling"
 }
