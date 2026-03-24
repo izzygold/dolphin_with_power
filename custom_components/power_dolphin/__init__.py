@@ -1,30 +1,36 @@
-"""Power Dolphin integration."""
+"""Dolphin integration."""
+
+from .API.dolphin import Dolphin, User
+
+from .const import (
+    DOMAIN,
+    PLATFORMS,
+    CONF_PASSWORD,
+    CONF_USERNAME,
+)
 
 import asyncio
+from .coordinator import UpdateCoordinator
 import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 
-from .API.power_dolphin import PowerDolphin, User
-from .const import CONF_PASSWORD, CONF_USERNAME, DOMAIN, PLATFORMS
-from .coordinator import UpdateCoordinator
-
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     username = entry.data.get(CONF_USERNAME)
     password = entry.data.get(CONF_PASSWORD)
 
-    async with PowerDolphin() as power_dolphin:
+    async with Dolphin() as dolphin:
         user = User
         user.email = username
-        user = await power_dolphin.getAPIKey(user, password)
-        user = await power_dolphin.getDevices(user)
+        user = await dolphin.getAPIKey(user, password)
+        user = await dolphin.getDevices(user)
 
-        coordinator = UpdateCoordinator(hass, power_dolphin, user)
+        coordinator = UpdateCoordinator(hass, dolphin, user)
         await coordinator.async_refresh()
 
         if not coordinator.last_update_success:
@@ -39,8 +45,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload Power Dolphin config entry."""
+    """Unload Dolphin config entry."""
 
+    # Unload entities for this entry/device.
     await asyncio.gather(
         *(
             hass.config_entries.async_forward_entry_unload(entry, component)
@@ -48,6 +55,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     )
 
+    # Cleanup
     del hass.data[DOMAIN][entry.entry_id]
     if not hass.data[DOMAIN]:
         del hass.data[DOMAIN]

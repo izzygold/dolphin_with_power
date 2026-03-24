@@ -46,24 +46,16 @@ async def async_setup_entry(
     entities: list[Entity] = []
 
     for device in coordinator.data.keys():
-        if await coordinator.power_dolphin.isEnergyMeter(
-            coordinator.power_dolphin._user, device
-        ) == "1":
-            entities.append(
-                PowerDolphinElectricCurrentSensor(hass=hass, coordinator=coordinator, device=device)
-            )
-            entities.append(
-                PowerDolphinCalculatedPowerSensor(hass=hass, coordinator=coordinator, device=device)
-            )
-            entities.append(
-                PowerDolphinCalculatedEnergySensor(hass=hass, coordinator=coordinator, device=device)
-            )
+        if await coordinator.dolphin.isEnergyMeter(coordinator.dolphin._user, device) == "1":
+            entities.append(DolphinElectricCurrentSensor(hass=hass, coordinator=coordinator, device=device))
+            entities.append(DolphinCalculatedPowerSensor(hass=hass, coordinator=coordinator, device=device))
+            entities.append(DolphinCalculatedEnergySensor(hass=hass, coordinator=coordinator, device=device))
 
     async_add_entities(entities)
 
 
-class PowerDolphinElectricCurrentSensor(CoordinatorEntity, SensorEntity):
-    """Reported electric current from the boiler API (device.energy field)."""
+class DolphinElectricCurrentSensor(CoordinatorEntity, SensorEntity):
+    """Reported electric current from the Dolphin API (device.energy field)."""
 
     _attr_device_class = SensorDeviceClass.CURRENT
     _attr_state_class = SensorStateClass.MEASUREMENT
@@ -100,7 +92,7 @@ class PowerDolphinElectricCurrentSensor(CoordinatorEntity, SensorEntity):
         )
 
 
-class PowerDolphinCalculatedPowerSensor(CoordinatorEntity, SensorEntity):
+class DolphinCalculatedPowerSensor(CoordinatorEntity, SensorEntity):
     """Apparent power from P = nominal_voltage × I (assumes unity PF)."""
 
     _attr_device_class = SensorDeviceClass.POWER
@@ -136,7 +128,7 @@ class PowerDolphinCalculatedPowerSensor(CoordinatorEntity, SensorEntity):
         return DeviceInfo(identifiers={(DOMAIN, self._device)})
 
 
-class PowerDolphinCalculatedEnergySensor(CoordinatorEntity, SensorEntity, RestoreEntity):
+class DolphinCalculatedEnergySensor(CoordinatorEntity, SensorEntity, RestoreEntity):
     """Energy (kWh) by integrating calculated power over time between coordinator updates."""
 
     _attr_device_class = SensorDeviceClass.ENERGY

@@ -1,6 +1,6 @@
 # Power Dolphin for Home Assistant
 
-[Home Assistant](https://www.home-assistant.io/) integration for [Dolphin](https://www.dolphinboiler.com) smart water heaters, published as **`power_dolphin`** (domain and folder name) so it can live beside the upstream **`dolphin`** integration if needed.
+[Home Assistant](https://www.home-assistant.io/) integration for [Dolphin](https://www.dolphinboiler.com) smart water heaters. The integration domain and folder name are **`power_dolphin`** (so it does not clash with the upstream **`dolphin`** package name).
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
@@ -32,10 +32,6 @@ The data path used by the integration does not provide separate voltage or energ
 
 Those assumptions are approximations (real mains voltage and power factor vary). They are good enough for many monitoring and Energy-dashboard use cases; treat the numbers accordingly.
 
-### Integration id: `power_dolphin`
-
-This fork installs as **`power_dolphin`** (not `dolphin`). Entity ids use the `power_dolphin.*` prefix. If you previously used a build named `dolphin`, remove the old integration entry and add **Power Dolphin** again, or keep both integrations only if you intentionally want two connections (not typical).
-
 ---
 
 ## Installation
@@ -48,12 +44,12 @@ Use **this** repository (`izzygold/dolphin_with_power`), not the HACS default se
 2. In Home Assistant, open **HACS** → **Integrations**.
 3. Open the menu (⋮) → **Custom repositories**.
 4. Add repository **`https://github.com/izzygold/dolphin_with_power`**, category **Integration**, then **Add**.
-5. In **HACS** → **Integrations**, open **+ Explore & download repositories**, find **Power Dolphin** (or **power_dolphin**) from this custom repo, and **Download**.
+5. In **HACS** → **Integrations**, open **+ Explore & download repositories**, find **Power Dolphin** from this custom repo, and **Download**.
 6. Restart Home Assistant.
 
 <a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=izzygold&repository=dolphin_with_power&category=integration" target="_blank"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open this fork’s repository in HACS." /></a>
 
-7. In Home Assistant go to **Settings** → **Devices & services** → **+ Add integration** → search for **Power Dolphin** or **`power_dolphin`** and complete the config flow (password is entered in a masked field).
+7. In Home Assistant go to **Settings** → **Devices & services** → **+ Add integration** → search for **Power Dolphin** or **`power_dolphin`** and complete the config flow.
 
 <a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=power_dolphin" target="_blank"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up the Power Dolphin integration." /></a>
 
@@ -83,6 +79,6 @@ For each Dolphin unit, Home Assistant gets a device with (among other entities):
 ## Credits
 
 - **Original integration:** [Alon Teplitsky](https://www.linkedin.com/in/alon-teplitsky/) / [@0xAlon](https://github.com/0xAlon) — [0xAlon/dolphin](https://github.com/0xAlon/dolphin).
-- **This fork:** power/energy sensors, `power_dolphin` domain, and documentation updates for [izzygold/dolphin_with_power](https://github.com/izzygold/dolphin_with_power).
+- **This fork:** power/energy sensors and documentation updates for [izzygold/dolphin_with_power](https://github.com/izzygold/dolphin_with_power).
 
 If you hit bugs that are specific to **power, energy, or the 230 V assumption**, open an issue on **this** repository. For core Dolphin/API behaviour shared with upstream, consider checking upstream issues too—fixes there help everyone.
