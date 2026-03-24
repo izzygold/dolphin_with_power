@@ -68,20 +68,6 @@ Use **this** repository (`izzygold/dolphin_with_power`), not the HACS default se
 
 ---
 
-## Troubleshooting
-
-### “This integration does not support configuration via the UI”
-
-Home Assistant shows that text when it does not find a **UI (config flow) integration** for the domain in the URL. Common causes:
-
-1. **Wrong domain** — This fork is **`power_dolphin`**. Links or bookmarks that still use **`domain=dolphin`** (from the upstream project name) will **not** open this integration. Use **`power_dolphin`** or add the integration from **Settings → Devices & services → Add integration** and search for **Power Dolphin**.
-2. **Files missing or HA not restarted** — Ensure `config/custom_components/power_dolphin/` contains the full integration (including `manifest.json` with `"config_flow": true`), then **restart Home Assistant**.
-3. **“Open my Home Assistant” before install** — The My Home Assistant button only works after the custom component is installed and HA has been restarted. Install via HACS or manual copy first, restart, then use the button or add the integration from the UI.
-
-If it still fails, open **Settings → System → Logs** and look for errors mentioning `power_dolphin` or `config_flow` (e.g. a failed import).
-
----
-
 ## Devices
 
 For each Dolphin unit, Home Assistant gets a device with (among other entities):
